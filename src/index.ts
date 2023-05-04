@@ -1,3 +1,6 @@
+//Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+//SPDX-License-Identifier: Apache-2.0
+
 import { Command  } from 'commander';
 import { CallSimulator } from './CallSimulator';
 import * as fs from 'fs';
