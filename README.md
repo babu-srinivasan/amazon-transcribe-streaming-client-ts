@@ -1,6 +1,4 @@
-LCA Client utility makes it easier to test Call Event Processors and LCA UI without having to actually make a phone call.
-Simulates LCA call events required by Call Event Processor. Uses call recording (stereo file) as input and writes
-the events to LCA's KDS (integration layer). Supports both TCA and Standard transcribe modes.
+Transcribe streaming client utility makes it easier to test Transcribe streaming API by streaming an audio file to Transcribe service. Uses supported audio recording as input and writes the transcriptions to the console. Supports Standard transcribe mode.
 
 ## How to use
 The code runs locally from your terminal command line or from cloud shell/cloud9 command line. 
