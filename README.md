@@ -15,8 +15,10 @@ const savePartial = false;
 ```
 3. `yarn run build` to build and check for build error
 4. `yarn run exec <mediaFileName> [api-mode] [region]`
-    where `api-mode` - standard  
-          `region` - AWS region
+
+    where `api-mode` - 'standard'  
+
+          `region` - AWS region. Defaults to 'us-east-1'
 
     e.g. `yarn run exec data/sample90seconds.wav standard us-east-1`
 
