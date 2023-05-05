@@ -1,4 +1,4 @@
-Transcribe streaming client utility makes it easier to test Transcribe streaming API by streaming an audio file to Transcribe service. Uses supported audio recording as input and writes the transcriptions to the console. Supports Standard transcribe mode.
+Transcribe streaming client utility makes it easier to test Transcribe streaming API by streaming an audio file to Transcribe service. Uses audio file (recorded in supported formats) as input and writes the transcriptions to the console. Supports Standard transcribe mode.
 
 ## How to use
 The code runs locally from your terminal command line or from cloud shell/cloud9 command line. 
