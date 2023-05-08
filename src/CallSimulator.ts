@@ -55,7 +55,7 @@ export class CallSimulator {
                     return;
                 }
                 // const { Transcript: transcript } = transcribeMessageJson.Transcript.Results[0].Alternatives[0];
-                this.fileWriter?.write(JSON.stringify(result)+'\n');
+                this.fileWriter?.write(JSON.stringify(transcribeMessageJson.Transcript.Results[0].Alternatives[0])+'\n');
             }
         }
     }
