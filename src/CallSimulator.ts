@@ -17,6 +17,7 @@ import { WriteStream, createWriteStream } from 'fs';
 const BYTES_PER_SAMPLE = 2;
 const CHUNK_SIZE_IN_MS = 200;
 const LANGUAGE_CODE = 'en-US';
+const MEDIA_ENCODING = 'pcm';
 const savePartial = false;
 const CV = undefined;
 
@@ -89,7 +90,7 @@ export class CallSimulator {
             new StartStreamTranscriptionCommand({
                 LanguageCode: LANGUAGE_CODE,
                 MediaSampleRateHertz: this._samplerate,
-                MediaEncoding: 'pcm',
+                MediaEncoding: MEDIA_ENCODING,
                 EnableChannelIdentification: false,
                 ShowSpeakerLabel: true,
                 VocabularyName: CV,
