@@ -11,9 +11,10 @@ new Command()
     .showHelpAfterError()
     
     .argument('<media-filename>', 'Required: Call recording file name - stereo only')
+    .argument('<sample-rate>', 'Required: sample rate of the audio file')
     .argument('[region]', 'Optional: AWS Region. Default to AWS_REGION or us-east-1')
 
-    .action((mediaFileName: string, region: string): void => {
+    .action((mediaFileName: string, sampleRate: number, region: string): void => {
         try {
             fs.accessSync(mediaFileName, fs.constants.R_OK);
         } catch (err) {
@@ -26,7 +27,7 @@ new Command()
             console.info('Region parameter was not provided. Defaulted to us-east-1');
         }
 
-        const callsimulator = new CallSimulator(mediaFileName, region);
+        const callsimulator = new CallSimulator(mediaFileName, sampleRate, region);
         (async () => {
             await callsimulator.writeTranscriptEvents();
         })();

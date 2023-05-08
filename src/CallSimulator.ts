@@ -13,7 +13,7 @@ import * as chain from 'stream-chain';
 import * as fs from 'fs';
 import { WriteStream, createWriteStream } from 'fs';
 
-const SAMPLE_RATE = 48000;
+// const SAMPLE_RATE = 48000;
 const BYTES_PER_SAMPLE = 2;
 const CHUNK_SIZE_IN_MS = 200;
 const LANGUAGE_CODE = 'en-US';
@@ -24,10 +24,11 @@ export class CallSimulator {
     readonly _client: TranscribeStreamingClient;
     readonly _mediafilename: string;
     readonly _outputfilename: string;
+    readonly _samplerate: number;
     fileWriter: WriteStream | null;
 
 
-    constructor(mediaFileName: string, region?: string) {
+    constructor(mediaFileName: string, sampleRate: number, region?: string) {
         const clientconfig: TranscribeStreamingClientConfig = {
             region: region
         };
@@ -40,8 +41,10 @@ export class CallSimulator {
         }
 
         this._mediafilename = mediaFileName;
+        this._samplerate = sampleRate;
         this._outputfilename = 'transcripts/'+mediaFileName.substring(mediaFileName.lastIndexOf('/')+1) + '.jsonl';
         this.fileWriter = createWriteStream(this._outputfilename, { encoding: 'utf-8' });
+
     }
 
     async writeTranscriptionSegment(transcribeMessageJson:TranscriptEvent):Promise<void> {
@@ -62,7 +65,7 @@ export class CallSimulator {
 
     async writeTranscriptEvents():Promise<void>{
 
-        const CHUNK_SIZE = (SAMPLE_RATE * BYTES_PER_SAMPLE)*CHUNK_SIZE_IN_MS/1000;
+        const CHUNK_SIZE = (this._samplerate * BYTES_PER_SAMPLE)*CHUNK_SIZE_IN_MS/1000;
 
         // const timer = (millisec: number) => new Promise(cb => setTimeout(cb, millisec));
         const audiopipeline:chain = new chain([
@@ -85,7 +88,7 @@ export class CallSimulator {
         const response = await this._client.send(
             new StartStreamTranscriptionCommand({
                 LanguageCode: LANGUAGE_CODE,
-                MediaSampleRateHertz: SAMPLE_RATE,
+                MediaSampleRateHertz: this._samplerate,
                 MediaEncoding: 'pcm',
                 EnableChannelIdentification: false,
                 ShowSpeakerLabel: true,
