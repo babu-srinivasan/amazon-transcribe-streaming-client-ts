@@ -18,7 +18,7 @@ const BYTES_PER_SAMPLE = 2;
 const CHUNK_SIZE_IN_MS = 200;
 const LANGUAGE_CODE = 'en-US';
 const savePartial = false;
-const CV = 'fs-cv-final-v1';
+const CV = undefined;
 
 export class CallSimulator {
     readonly _client: TranscribeStreamingClient;
