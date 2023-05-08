@@ -12,11 +12,12 @@ import {
 import * as chain from 'stream-chain';
 import * as fs from 'fs';
 
-const SAMPLE_RATE = 8000;
+const SAMPLE_RATE = 48000;
 const BYTES_PER_SAMPLE = 2;
 const CHUNK_SIZE_IN_MS = 200;
 const LANGUAGE_CODE = 'en-US';
 const savePartial = false;
+const CV = 'fs-cv-final-v1';
 
 export class CallSimulator {
     readonly _client: TranscribeStreamingClient;
@@ -81,8 +82,9 @@ export class CallSimulator {
                 LanguageCode: LANGUAGE_CODE,
                 MediaSampleRateHertz: SAMPLE_RATE,
                 MediaEncoding: 'pcm',
-                EnableChannelIdentification: true,
-                NumberOfChannels: 2,
+                EnableChannelIdentification: false,
+                ShowSpeakerLabel: true,
+                VocabularyName: CV,
                 AudioStream: transcribeInput()
             })
         );

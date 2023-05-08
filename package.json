@@ -11,7 +11,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "setup": "yarn",
+    "setup": "npm install",
     "exec": "ts-node src/index.ts",
     "build": "tsc --project tsconfig.json --pretty && npm run lint",
     "buildcheck": "tsc --project tsconfig.json --pretty --noEmit && npm run lint",
