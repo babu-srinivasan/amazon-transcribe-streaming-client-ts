@@ -11,6 +11,7 @@ import {
 
 import * as chain from 'stream-chain';
 import * as fs from 'fs';
+import { WriteStream, createWriteStream } from 'fs';
 
 const SAMPLE_RATE = 48000;
 const BYTES_PER_SAMPLE = 2;
@@ -22,6 +23,9 @@ const CV = 'fs-cv-final-v1';
 export class CallSimulator {
     readonly _client: TranscribeStreamingClient;
     readonly _mediafilename: string;
+    readonly _outputfilename: string;
+    fileWriter: WriteStream | null;
+
 
     constructor(mediaFileName: string, region?: string) {
         const clientconfig: TranscribeStreamingClientConfig = {
@@ -29,13 +33,15 @@ export class CallSimulator {
         };
         try {
             this._client = new TranscribeStreamingClient(clientconfig);
-            console.info('Created Transcribe Streaming client');
+            // console.info('Created Transcribe Streaming client');
         } catch (error) {
             console.error('Error creating Transcribe Streaming client', error);
             process.exit(1);
         }
 
         this._mediafilename = mediaFileName;
+        this._outputfilename = 'transcripts/'+mediaFileName.substring(mediaFileName.lastIndexOf('/')+1) + '.jsonl';
+        this.fileWriter = createWriteStream(this._outputfilename, { encoding: 'utf-8' });
     }
 
     async writeTranscriptionSegment(transcribeMessageJson:TranscriptEvent):Promise<void> {
@@ -48,9 +54,8 @@ export class CallSimulator {
                 if (result.IsPartial == undefined || (result.IsPartial == true && !savePartial)) {
                     return;
                 }
-                const { Transcript: transcript } = transcribeMessageJson.Transcript.Results[0].Alternatives[0];
-                console.debug(transcript);
-
+                // const { Transcript: transcript } = transcribeMessageJson.Transcript.Results[0].Alternatives[0];
+                this.fileWriter?.write(JSON.stringify(result)+'\n');
             }
         }
     }
@@ -88,8 +93,8 @@ export class CallSimulator {
                 AudioStream: transcribeInput()
             })
         );
-        console.debug(
-            `=== Received Initial response from Transcribe. Session Id: ${response.SessionId} ===`
+        console.info(
+            `${this._mediafilename}, ${response.SessionId}, STARTED`
         );
         const outputTranscriptStream: AsyncIterable<TranscriptResultStream> | undefined = response.TranscriptResultStream;
     
@@ -100,6 +105,10 @@ export class CallSimulator {
                     await this.writeTranscriptionSegment(message);
                 }
             }
+            this.fileWriter?.close();
+            console.info(
+                `${this._mediafilename}, ${response.SessionId}, COMPLETED`
+            );
         }
     }
 }
