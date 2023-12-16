@@ -13,7 +13,6 @@ import * as chain from 'stream-chain';
 import * as fs from 'fs';
 import { WriteStream, createWriteStream } from 'fs';
 
-// const SAMPLE_RATE = 48000;
 const BYTES_PER_SAMPLE = 2;
 const CHUNK_SIZE_IN_MS = 200;
 const LANGUAGE_CODE = 'en-US';
@@ -43,7 +42,7 @@ export class CallSimulator {
 
         this._mediafilename = mediaFileName;
         this._samplerate = sampleRate;
-        this._outputfilename = 'transcripts/'+mediaFileName.substring(mediaFileName.lastIndexOf('/')+1) + '.jsonl';
+        this._outputfilename = 'transcripts/'+mediaFileName.substring(mediaFileName.lastIndexOf('/')+1) + '.txt';
         this.fileWriter = createWriteStream(this._outputfilename, { encoding: 'utf-8' });
 
     }
@@ -58,8 +57,9 @@ export class CallSimulator {
                 if (result.IsPartial == undefined || (result.IsPartial == true && !savePartial)) {
                     return;
                 }
-                // const { Transcript: transcript } = transcribeMessageJson.Transcript.Results[0].Alternatives[0];
-                this.fileWriter?.write(JSON.stringify(transcribeMessageJson.Transcript.Results[0].Alternatives[0])+'\n');
+                const { Transcript: transcript } = transcribeMessageJson.Transcript.Results[0].Alternatives[0];
+                this.fileWriter?.write(transcript+'\n');
+                // this.fileWriter?.write(JSON.stringify(transcribeMessageJson.Transcript.Results[0].Alternatives[0])+'\n');
             }
         }
     }
@@ -91,15 +91,16 @@ export class CallSimulator {
                 LanguageCode: LANGUAGE_CODE,
                 MediaSampleRateHertz: this._samplerate,
                 MediaEncoding: MEDIA_ENCODING,
-                EnableChannelIdentification: false,
-                ShowSpeakerLabel: true,
+                EnableChannelIdentification: true,
+                NumberOfChannels: 2,
+                ShowSpeakerLabel: false,
                 VocabularyName: CV,
                 AudioStream: transcribeInput()
             })
         );
         console.info(
             `${this._mediafilename}, ${response.SessionId}, STARTED`
-        );
+        ); 
         const outputTranscriptStream: AsyncIterable<TranscriptResultStream> | undefined = response.TranscriptResultStream;
     
         if (outputTranscriptStream) {   
